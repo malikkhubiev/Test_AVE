@@ -1,6 +1,8 @@
 # Phone-Address Service
 
-Тестовое задание - сервис для хранения связок телефон-адрес на FastAPI и Redis.
+Тестовое задание №1 - сервис для хранения связок телефон-адрес на FastAPI и Redis.
+<br>
+[Тестовое задание №2](https://github.com/malikkhubiev/Test_AVE/blob/main/SecondTask.md)
 
 ## Запуск
 
