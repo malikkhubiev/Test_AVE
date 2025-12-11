@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone-Address Service</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Century Gothic", Arial, sans-serif;
+            background: white;
+            color: black;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+
+        .header {
+            background: black;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .endpoint-section {
+            border: 1px solid black;
+            padding: 15px;
+        }
+
+        .endpoint-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .method-badge {
+            padding: 3px 8px;
+            border: 1px solid black;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid black;
+            font-family: "Century Gothic", Arial, sans-serif;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 1px solid black;
+            background: white;
+            cursor: pointer;
+            font-family: "Century Gothic", Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: black;
+            color: white;
+        }
+
+        .response {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid black;
+            display: none;
+            background: white;
+        }
+
+        .response.show {
+            display: block;
+        }
+
+        .response pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: "Century Gothic", monospace;
+            font-size: 12px;
+        }
+
+        .health-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 1px solid black;
+            margin-left: 10px;
+        }
+
+        .health-status.healthy {
+            background: white;
+            color: black;
+        }
+
+        .health-status.unhealthy {
+            background: black;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Phone-Address Service</h1>
+            <div>
+                <span>Статус:</span>
+                <span id="healthStatus" class="health-status">Проверка...</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="endpoint-section">
+                <h2>
+                    <span class="method-badge">GET</span>
+                    /health
+                </h2>
+                <button class="btn" onclick="checkHealth()">Проверить</button>
+                <div id="healthResponse" class="response"></div>
+            </div>
+
+            <div class="endpoint-section">
+                <h2>
+                    <span class="method-badge">GET</span>
+                    /phone/{phone}
+                </h2>
+                <div class="form-group">
+                    <label>Номер телефона:</label>
+                    <input type="text" id="getPhone" value="+79001234567">
+                </div>
+                <button class="btn" onclick="getAddress()">Получить адрес</button>
+                <div id="getResponse" class="response"></div>
+            </div>
+
+            <div class="endpoint-section">
+                <h2>
+                    <span class="method-badge">POST</span>
+                    /phone
+                </h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Номер телефона:</label>
+                        <input type="text" id="createPhone" value="+79001234567">
+                    </div>
+                    <div class="form-group">
+                        <label>Адрес:</label>
+                        <input type="text" id="createAddress" value="г. Москва, ул. Ленина, д. 1">
+                    </div>
+                </div>
+                <button class="btn" onclick="createAddress()">Создать</button>
+                <div id="createResponse" class="response"></div>
+            </div>
+
+            <div class="endpoint-section">
+                <h2>
+                    <span class="method-badge">PUT</span>
+                    /phone/{phone}
+                </h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Номер телефона:</label>
+                        <input type="text" id="updatePhone" value="+79001234567">
+                    </div>
+                    <div class="form-group">
+                        <label>Новый адрес:</label>
+                        <input type="text" id="updateAddress" value="г. Санкт-Петербург, ул. Пушкина, д. 10">
+                    </div>
+                </div>
+                <button class="btn" onclick="updateAddress()">Обновить</button>
+                <div id="updateResponse" class="response"></div>
+            </div>
+
+            <div class="endpoint-section">
+                <h2>
+                    <span class="method-badge">DELETE</span>
+                    /phone/{phone}
+                </h2>
+                <div class="form-group">
+                    <label>Номер телефона:</label>
+                    <input type="text" id="deletePhone" value="+79001234567">
+                </div>
+                <button class="btn" onclick="deleteAddress()">Удалить</button>
+                <div id="deleteResponse" class="response"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        window.onload = function() {
+            checkHealth();
+        };
+
+        function showResponse(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.className = 'response show';
+            element.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        async function checkHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                showResponse('healthResponse', data);
+                
+                const statusEl = document.getElementById('healthStatus');
+                if (data.status === 'healthy') {
+                    statusEl.textContent = 'Работает';
+                    statusEl.className = 'health-status healthy';
+                } else {
+                    statusEl.textContent = 'Ошибка';
+                    statusEl.className = 'health-status unhealthy';
+                }
+            } catch (error) {
+                showResponse('healthResponse', { error: error.message }, true);
+                document.getElementById('healthStatus').textContent = 'Ошибка';
+                document.getElementById('healthStatus').className = 'health-status unhealthy';
+            }
+        }
+
+        async function getAddress() {
+            const phone = document.getElementById('getPhone').value.trim();
+            if (!phone) {
+                alert('Введите номер телефона');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/phone/${encodeURIComponent(phone)}`);
+                const data = await response.json();
+                showResponse('getResponse', data, !response.ok);
+            } catch (error) {
+                showResponse('getResponse', { error: error.message }, true);
+            }
+        }
+
+        async function createAddress() {
+            const phone = document.getElementById('createPhone').value.trim();
+            const address = document.getElementById('createAddress').value.trim();
+
+            if (!phone || !address) {
+                alert('Заполните все поля');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/phone`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phone, address })
+                });
+                const data = await response.json();
+                showResponse('createResponse', data, !response.ok);
+            } catch (error) {
+                showResponse('createResponse', { error: error.message }, true);
+            }
+        }
+
+        async function updateAddress() {
+            const phone = document.getElementById('updatePhone').value.trim();
+            const address = document.getElementById('updateAddress').value.trim();
+
+            if (!phone || !address) {
+                alert('Заполните все поля');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/phone/${encodeURIComponent(phone)}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ address })
+                });
+                const data = await response.json();
+                showResponse('updateResponse', data, !response.ok);
+            } catch (error) {
+                showResponse('updateResponse', { error: error.message }, true);
+            }
+        }
+
+        async function deleteAddress() {
+            const phone = document.getElementById('deletePhone').value.trim();
+            if (!phone) {
+                alert('Введите номер телефона');
+                return;
+            }
+
+            if (!confirm(`Удалить запись для телефона ${phone}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/phone/${encodeURIComponent(phone)}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.status === 204) {
+                    showResponse('deleteResponse', { message: 'Запись удалена', status: 204 }, false);
+                } else {
+                    const data = await response.json();
+                    showResponse('deleteResponse', data, true);
+                }
+            } catch (error) {
+                showResponse('deleteResponse', { error: error.message }, true);
+            }
+        }
+    </script>
+</body>
+</html>
